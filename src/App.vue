@@ -2,7 +2,7 @@
   <router-view></router-view>
 </template>
 <script>
-import Login from './pages/login'
+import Login from './pages/login/login'
 
 export default {
   name: 'app',
@@ -12,6 +12,7 @@ export default {
 }
 </script>
 <style>
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
 html,
 body {
   width: 100%;
