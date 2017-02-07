@@ -13,7 +13,7 @@ import Login from './pages/login/login'
 import Register from './pages/login/register'
 // import Todo from './pages/todo'
 import TodoTab from './pages/todo-tab'
-
+import Edit from './pages/edit'
 // load api
 import { getlocalStorageItemName, isLogedin } from './api/api'
 // install plugins
@@ -50,6 +50,7 @@ const routes = [{
 
 
 let router = new VueRouter({
+  mode: 'history',
   routes
 })
 

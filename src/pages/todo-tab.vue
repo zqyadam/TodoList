@@ -1,7 +1,7 @@
 <template>
   <div class="fit">
     <mu-flexbox orient="vertical" wrap :gutter="0" class="fit">
-    <!-- app bar  -->
+      <!-- app bar  -->
       <mu-flexbox-item>
         <mu-appbar title="TodoList">
           <mu-icon-button icon='menu' slot="left" @click="showDrawer" />
@@ -13,29 +13,31 @@
       <!-- tabs -->
       <mu-flexbox-item>
         <mu-tabs class="tabBar" :value="type" @change="handleTabChange" lineClass="tabHighlight">
-          <mu-tab value="ImpEmg" :title="types['ImpEmg']" titleClass="ImportantEmergencyTitle" />
-          <mu-tab value="ImpNotEmg" :title="types['ImpNotEmg']" titleClass="ImportantNonEmergencyTitle" />
-          <mu-tab value="NotImpEmg" :title="types['NotImpEmg']" titleClass="NonImportantEmergencyTitle" />
-          <mu-tab value="NotImpNotEmg" :title="types['NotImpNotEmg']" titleClass="NonImportantNonEmergencyTitle" />
+          <mu-tab value="ImpEmg" :title="types['ImpEmg']" titleClass="ImpEmgTitle" />
+          <mu-tab value="ImpNotEmg" :title="types['ImpNotEmg']" titleClass="ImpNotEmgTitle" />
+          <mu-tab value="NotImpEmg" :title="types['NotImpEmg']" titleClass="NotImpEmgTitle" />
+          <mu-tab value="NotImpNotEmg" :title="types['NotImpNotEmg']" titleClass="NotImpNotEmgTitle" />
         </mu-tabs>
       </mu-flexbox-item>
       <!-- tabs end -->
       <!-- list  -->
       <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch">
         <v-touch v-on:swipeleft="nextTab" v-on:swiperight="previousTab" class="fit scroll" :swipe-options="{threshold:30}">
-          <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" :type="types['ImpEmg']" noTodoTipClass="ImportantEmergencyTitle" :showDeleteBtn="bottomNav" />
-          <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" :type="types['ImpNotEmg']" noTodoTipClass="ImportantNonEmergencyTitle" :showDeleteBtn="bottomNav" />
-          <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" :type="types['NotImpEmg']" noTodoTipClass="NonImportantEmergencyTitle" :showDeleteBtn="bottomNav" />
-          <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" :type="types['NotImpNotEmg']" noTodoTipClass="NonImportantNonEmergencyTitle" :showDeleteBtn="bottomNav" />
+          <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
+          <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" type="ImpNotEmg" noTodoTipClass="ImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
+          <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" type="NotImpEmg" noTodoTipClass="NotImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
+          <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" type="NotImpNotEmg" noTodoTipClass="NotImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
         </v-touch>
       </mu-flexbox>
       <!-- list end -->
       <!-- bottom nav -->
       <mu-paper class="fitWidth">
-        <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
-          <mu-bottom-nav-item :value="false" title="未完成" icon="restore" />
-          <mu-bottom-nav-item :value="true" title="已完成" icon="favorite" />
-        </mu-bottom-nav>
+        <v-touch @swipeleft="toggleBottomNavStatusPanel" @swiperight="toggleBottomNavStatusPanel">
+          <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
+            <mu-bottom-nav-item :value="false" title="未完成" icon="restore" />
+            <mu-bottom-nav-item :value="true" title="已完成" icon="favorite" />
+          </mu-bottom-nav>
+        </v-touch>
       </mu-paper>
       <!-- bottom nav end -->
     </mu-flexbox>
@@ -62,10 +64,10 @@
     <mu-dialog :open="showAddTodoItemDialog" title="添加事项" @close="TodoItemDialogClose">
       <mu-text-field hintText="待办事项" fullWidth v-model="content" />
       <mu-flexbox orient="vertical" align="flex-start">
-        <mu-radio :label="types['ImpEmg']" name="type" nativeValue="ImpEmg" v-model="type" labelClass="ImportantEmergencyTitle" />
-        <mu-radio :label="types['ImpNotEmg']" name="type" nativeValue="ImpNotEmg" v-model="type" labelClass="ImportantNonEmergencyTitle" />
-        <mu-radio :label="types['NotImpEmg']" name="type" nativeValue="NotImpEmg" v-model="type" labelClass="NonImportantEmergencyTitle" />
-        <mu-radio :label="types['NotImpNotEmg']" name="type" nativeValue="NotImpNotEmg" v-model="type" labelClass="NonImportantNonEmergencyTitle" />
+        <mu-radio :label="types['ImpEmg']" name="type" nativeValue="ImpEmg" v-model="type" labelClass="ImpEmgTitle" />
+        <mu-radio :label="types['ImpNotEmg']" name="type" nativeValue="ImpNotEmg" v-model="type" labelClass="ImpNotEmgTitle" />
+        <mu-radio :label="types['NotImpEmg']" name="type" nativeValue="NotImpEmg" v-model="type" labelClass="NotImpEmgTitle" />
+        <mu-radio :label="types['NotImpNotEmg']" name="type" nativeValue="NotImpNotEmg" v-model="type" labelClass="NotImpNotEmgTitle" />
       </mu-flexbox>
       <mu-flat-button slot="actions" @click="ConfirmedAddTodoItem" primary label="添加" />
       <mu-flat-button slot="actions" primary @click="TodoItemDialogClose" label="取消" />
@@ -156,7 +158,8 @@ export default {
           type: "ImpEmg",
           status: false,
         }, ],
-        content: ''
+        content: '',
+
       }
     },
     computed: {
@@ -170,21 +173,25 @@ export default {
         return this.types[this.type]
       },
       ImpEmgTodos: function() {
+        // console.log(this.ImpEmgTodos);
         return this.todos.filter(function(item) {
           return item.type == "ImpEmg";
         })
       },
       ImpNotEmgTodos: function() {
+        // console.log(this.ImpNotEmgTodos);
         return this.todos.filter(function(item) {
-          return item.type == "ImpNot Emg";
+          return item.type == "ImpNotEmg";
         })
       },
       NotImpEmgTodos: function() {
+        // console.log(this.NotImpEmgTodos);
         return this.todos.filter(function(item) {
           return item.type == "NotImpEmg";
         })
       },
       NotImpNotEmgTodos: function() {
+        // console.log(this.NotImpNotEmgTodos);
         return this.todos.filter(function(item) {
           return item.type == "NotImpNotEmg";
         })
@@ -277,6 +284,9 @@ export default {
       },
       toggleBottomNavStatus: function(val) {
         this.bottomNav = val;
+      },
+      toggleBottomNavStatusPanel: function() {
+        this.bottomNav = !this.bottomNav;
       }
     },
     components: {
@@ -295,7 +305,7 @@ export default {
 }
 
 .scroll {
-  overflow: scroll;
+  overflow: auto;
 }
 
 .tabBar {
@@ -314,35 +324,35 @@ export default {
   background-color: #03a9f4;
 }
 
-.ImportantEmergency {
+.ImpEmg {
   background-color: #d32f2f;
 }
 
-.ImportantEmergencyTitle {
+.ImpEmgTitle {
   color: #d32f2f;
 }
 
-.ImportantNonEmergency {
+.ImpNotEmg {
   background-color: #f57f17;
 }
 
-.ImportantNonEmergencyTitle {
+.ImpNotEmgTitle {
   color: #f57f17;
 }
 
-.NonImportantEmergency {
+.NotImpEmg {
   background-color: #0d47a1;
 }
 
-.NonImportantEmergencyTitle {
+.NotImpEmgTitle {
   color: #0d47a1;
 }
 
-.NonImportantNonEmergency {
+.NotImpNotEmg {
   background-color: #8bc34a;
 }
 
-.NonImportantNonEmergencyTitle {
+.NotImpNotEmgTitle {
   color: #8bc34a;
 }
 </style>
