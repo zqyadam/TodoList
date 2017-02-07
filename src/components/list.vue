@@ -1,15 +1,11 @@
 <template>
   <div>
     <mu-list v-if="todoData.length">
-      <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
-      <!-- <transition-group :name="fadeDirection"> -->
-      <mu-list-item v-for="(todo,index) in todoData" :title="todo.content" :key="index">
-        <mu-icon :value="iconType" slot="left" @click="toogleStatus(todo)" />
-        <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
-        <mu-icon-button v-show="!showDeleteBtn" icon="mode_edit" slot="right" @click="editTodo(todo)" touch/>
+      <mu-list-item v-for="(todo,index) in todoData" :title="todo.attributes.content" :key="index">
+        <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
+        <mu-icon-button icon="delete" @click="deleteTodo(todo)" v-show="showDeleteBtn" touch slot="right"></mu-icon-button>
+        <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
       </mu-list-item>
-      <!-- </transition-group> -->
-      <!-- </v-touch> -->
     </mu-list>
     <div v-else class="no-todo-tip">
       还没有<span :class="noTodoTipClass"><span style="font-weight:bold;">{{ !showDeleteBtn?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
@@ -17,7 +13,7 @@
     <!--************************** 不显示内容 ****************************-->
     <!-- edit Todo Item dialog -->
     <mu-dialog :open="editTodoDialog" title="修改Todo" @close="closeEditTodoDialog">
-      <mu-flexbox orient="vertical" align="stretch" >
+      <mu-flexbox orient="vertical" align="stretch">
         <!-- 编辑Todo -->
         <mu-flexbox-item>
           <mu-text-field label="编辑内容" hintText="输入Todo内容" fullWidth v-model="todoTempCopy.content" />
@@ -43,14 +39,18 @@
   </div>
 </template>
 <script>
+import {
+  SaveTodoItem
+} from '../api/api';
+
 export default {
   data: function() {
     return {
       editTodoDialog: false,
       todoTempCopy: {
-      	content:'',
-      	type:'',
-      	status:false
+        content: '',
+        type: '',
+        status: false
       },
       todoTemp: null
     }
@@ -79,7 +79,8 @@ export default {
     todoData: function() {
       let _this = this;
       return this.todos.filter(function(item) {
-        return item.status === _this.showDeleteBtn;
+      	item = item.toJSON();
+        return (item.status === _this.showDeleteBtn) && (item.enable);
       })
 
     },
@@ -89,35 +90,40 @@ export default {
     iconType: function() {
       return this.showDeleteBtn ? 'redo' : 'restore'
     },
-    labelClass:function() {
-    	return this.todoTempCopy.type+'Title';
+    labelClass: function() {
+      return this.todoTempCopy.type + 'Title';
     }
   },
   methods: {
-    toogleStatus: function(item) {
-      // if (!this.showDeleteBtn) {
-      item.status = !item.status;
-      // }
+    toggleStatus: function(item) {
+      item.set('status', !item.get('status'))
+      item.save();
     },
     deleteTodo: function(item) {
-      console.log('delete todo');
-      item.status = false;
+    	item.set('enable',false);
+    	item.save();
     },
     editTodo: function(item) {
+      var _this = this;
       this.todoTemp = item;
-      this.todoTempCopy.content = item.content;
-      this.todoTempCopy.type = item.type;
-      this.todoTempCopy.status = item.status;
+      item = item.toJSON()
+      Object.keys(item).forEach(function(key) {
+        _this.todoTempCopy[key] = item[key];
+      })
       this.editTodoDialog = true;
     },
     closeEditTodoDialog: function() {
       this.editTodoDialog = false;
     },
     saveTodoChange: function() {
-      this.todoTemp.content = this.todoTempCopy.content;
-      this.todoTemp.type = this.todoTempCopy.type;
-      this.todoTemp.status = this.todoTempCopy.status;
-      this.todos = this.todos;
+      var _this = this;
+      delete _this.todoTempCopy.objectId;
+      delete _this.todoTempCopy.createdAt;
+      delete _this.todoTempCopy.updatedAt;
+      Object.keys(this.todoTempCopy).forEach(function(key) {
+        _this.todoTemp.set(key, _this.todoTempCopy[key])
+      })
+      _this.todoTemp.save();
       this.closeEditTodoDialog();
     }
   }

@@ -46,8 +46,6 @@
     <mu-drawer :open="drawer" :docked="false" @close="drawer=false">
       <mu-list>
         <mu-list-item :title="user" />
-        <mu-list-item title="Menu Item 2" />
-        <mu-list-item title="Menu Item 3" />
         <mu-list-item title="登出" @click.native="showLogoutConfirmDialog" />
         <mu-content-block class="content"><span style="font-weight:bold;">关于这个东西：</span>这个项目是为了学习Vue而制作，界面利用的是muse-ui框架，使用vue-router进行页面跳转，后端数据的存储使用LeanCloud的免费版。
         </mu-content-block>
@@ -79,7 +77,9 @@
 import {
   logOut,
   isLogedin,
-  getCurrentUser
+  getCurrentUser,
+  AddTodoItem,
+  LoadServerTodos
 } from '../api/api';
 import List from '../components/list'
 export default {
@@ -97,74 +97,12 @@ export default {
         },
         type: 'ImpEmg',
         bottomNav: false,
-        todos: [{
-          content: "1",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "2",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "3",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "4",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "5",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "6",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "7",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "8",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "9",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "10",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "11",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "12",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "13",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "14",
-          type: "ImpEmg",
-          status: false,
-        }, {
-          content: "15",
-          type: "ImpEmg",
-          status: false,
-        }, ],
-        content: '',
-
+        todos: [],
+        content: ''
       }
     },
     computed: {
       user: function() {
-        console.log(getCurrentUser());
         let currentUser = getCurrentUser();
         let username = currentUser.attributes.username;
         return "Hi~," + username;
@@ -173,27 +111,23 @@ export default {
         return this.types[this.type]
       },
       ImpEmgTodos: function() {
-        // console.log(this.ImpEmgTodos);
         return this.todos.filter(function(item) {
-          return item.type == "ImpEmg";
+          return item.attributes.type == "ImpEmg";
         })
       },
       ImpNotEmgTodos: function() {
-        // console.log(this.ImpNotEmgTodos);
         return this.todos.filter(function(item) {
-          return item.type == "ImpNotEmg";
+          return item.attributes.type == "ImpNotEmg";
         })
       },
       NotImpEmgTodos: function() {
-        // console.log(this.NotImpEmgTodos);
         return this.todos.filter(function(item) {
-          return item.type == "NotImpEmg";
+          return item.attributes.type == "NotImpEmg";
         })
       },
       NotImpNotEmgTodos: function() {
-        // console.log(this.NotImpNotEmgTodos);
         return this.todos.filter(function(item) {
-          return item.type == "NotImpNotEmg";
+          return item.attributes.type == "NotImpNotEmg";
         })
       }
     },
@@ -231,17 +165,23 @@ export default {
         if (!this.content) {
           return
         }
+        var _this = this;
         let todo = {};
         todo.content = this.content;
         todo.type = this.type;
         todo.status = false;
-        this.todos.push(todo);
-        this.TodoItemDialogClose();
+        todo.enable = true;
+        this.showAddTodoItemDialog = false;
         this.content = "";
-        console.log(todo);
+        AddTodoItem(todo).then(function(item) {
+          _this.todos.push(item);
+          _this.bottomNav = false;
+        }, function(err) {
+          alert("数据保存失败" + err.message)
+        })
+        
       },
       nextTab: function() {
-        console.log('swiping left');
         let type = this.type;
         switch (type) {
           case "ImpEmg":
@@ -262,7 +202,6 @@ export default {
         }
       },
       previousTab: function() {
-        console.log('swiping right');
         let type = this.type;
         switch (type) {
           case "ImpEmg":
@@ -291,6 +230,12 @@ export default {
     },
     components: {
       'z-list': List
+    },
+    mounted:function() {
+    	var _this = this;
+    	LoadServerTodos().then(function(todos) {
+    		_this.todos = todos;
+    	})
     }
 }
 </script>
@@ -356,57 +301,3 @@ export default {
   color: #8bc34a;
 }
 </style>
-<!-- 
-	model:
-	{
-		id:
-		content:
-		type:
-		status:
-	}
-
- -->
-<!-- tab 1 -->
-<!-- <div v-if="type === 'ImpEmg'" style="border:1px green solid" class="scroll" :class="{fit:ImpEmgTodos.length}">
-            <mu-list v-if="ImpEmgTodos.length">
-              <mu-list-item v-for="todo in ImpEmgTodos">
-                {{ todo.content }} - {{ todo.status?"完成":"未完成" }}
-              </mu-list-item>
-            </mu-list>
-            <p v-else class="no-todo-tip">
-              还没有[{{ types['ImpEmg']}}]事项，赶紧添加一个吧~
-            </p>
-          </div> -->
-<!-- tab 2 -->
-<!-- <div v-if="type === 'ImpNotEmg'" class="fit">
-            <mu-list v-if="ImpNotEmgTodos.length">
-              <mu-list-item v-for="todo in ImpNotEmgTodos">
-                {{ todo.content }} - {{ todo.status?"完成":"未完成" }}
-              </mu-list-item>
-            </mu-list>
-            <div v-else style="margin-top:80px;text-align:center;border:1px yellow solid;">
-              还没有[{{ types['ImpNotEmg']}}]事项，赶紧添加一个吧~
-            </div>
-          </div> -->
-<!-- tab 3 -->
-<!-- <div v-if="type === 'NotImpEmg'" class="fit">
-            <mu-list v-if="NotImpEmgTodos.length">
-              <mu-list-item v-for="todo in NotImpEmgTodos">
-                {{ todo.content }} - {{ todo.status?"完成":"未完成" }}
-              </mu-list-item>
-            </mu-list>
-            <div v-else class="no-todo-tip">
-              还没有[{{ types['NotImpEmg']}}]事项，赶紧添加一个吧~
-            </div>
-          </div> -->
-<!-- tab 4 -->
-<!-- <div v-if="type === 'NotImpNotEmg'" class="fit">
-    <mu-list v-if="NotImpNotEmgTodos.length">
-  <mu-list-item v-for="todo in NotImpNotEmgTodos">
-    {{ todo.content }} - {{ todo.status?"完成":"未完成" }}
-  </mu-list-item>
-</mu-list>
-<div v-else class="no-todo-tip">
-  还没有[{{ types['NotImpNotEmg']}}]事项，赶紧添加一个吧~
-</div>
-</div> -->
