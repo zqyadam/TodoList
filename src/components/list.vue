@@ -1,15 +1,29 @@
 <template>
-  <div>
-    <mu-list v-if="todoData.length">
-      <mu-list-item v-for="(todo,index) in todoData" :title="todo.attributes.content" :key="index">
-        <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
-        <mu-icon-button icon="delete" @click="deleteTodo(todo)" v-show="showDeleteBtn" touch slot="right"></mu-icon-button>
-        <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
-      </mu-list-item>
-    </mu-list>
-    <div v-else class="no-todo-tip">
-      还没有<span :class="noTodoTipClass"><span style="font-weight:bold;">{{ !showDeleteBtn?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
-    </div>
+  <div class="fit scroll">
+    <!-- {{ todos }} -->
+    
+      <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch" style="border:1px solid blue">
+        <!--  -->
+        <v-touch class="fit" style="border:1px solid red" v-on:swipeleft="nextTab" v-on:swiperight="previousTab" v-on:dbltap="addTodoItem">
+        <mu-list v-if="todoData.length">
+          <mu-list-item v-for="(todo,index) in todoData" :title="todo.attributes.content" :key="index" >
+            <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
+            <mu-icon-button icon="delete" @click="deleteTodo(todo)" v-show="done" touch slot="right"></mu-icon-button>
+            <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':done?'60px':'0px'}" />
+            <span style="color: #ccc" slot="describe">更新时间：{{ new Date(todo.updatedAt).toLocaleString() }}</span>
+          </mu-list-item>
+        </mu-list>
+        <div v-else class="no-todo-tip">
+          还没有<span :class="type+'Title'"><span style="font-weight:bold;">{{ !done?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
+        </div>
+        <!-- <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :done="bottomNav" :types="types" />
+          <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" type="ImpNotEmg" noTodoTipClass="ImpNotEmgTitle" :done="bottomNav" :types="types" />
+          <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" type="NotImpEmg" noTodoTipClass="NotImpEmgTitle" :done="bottomNav" :types="types" />
+          <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" type="NotImpNotEmg" noTodoTipClass="NotImpNotEmgTitle" :done="bottomNav" :types="types" /> -->
+    </v-touch>
+      </mu-flexbox>
+    <!-- list end -->
+    </mu-flexbox>
     <!--************************** 不显示内容 ****************************-->
     <!-- edit Todo Item dialog -->
     <mu-dialog :open="editTodoDialog" title="修改Todo" @close="closeEditTodoDialog">
@@ -44,17 +58,6 @@ import {
 } from '../api/api';
 
 export default {
-  data: function() {
-    return {
-      editTodoDialog: false,
-      todoTempCopy: {
-        content: '',
-        type: '',
-        status: false
-      },
-      todoTemp: null
-    }
-  },
   props: {
     todos: {
       type: Array,
@@ -64,10 +67,7 @@ export default {
       type: String,
       default: ""
     },
-    noTodoTipClass: {
-      type: String
-    },
-    showDeleteBtn: {
+    done: {
       type: Boolean,
       default: false
     },
@@ -75,20 +75,27 @@ export default {
       type: Object
     }
   },
+  data: function() {
+    return {
+      editTodoDialog: false,
+      todoTempCopy: {
+        content: '',
+        type: '',
+        status: false
+      },
+      todoTemp: null,
+      doneCount: 0
+    }
+  },
   computed: {
     todoData: function() {
       let _this = this;
       return this.todos.filter(function(item) {
-      	item = item.toJSON();
-        return (item.status === _this.showDeleteBtn) && (item.enable);
+        return (item.attributes.type === _this.type) && (item.attributes.status === _this.done) && (item.attributes.enable);
       })
-
-    },
-    fadeDirection: function() {
-      return this.showDeleteBtn ? 'fade-right' : 'fade-left';
     },
     iconType: function() {
-      return this.showDeleteBtn ? 'redo' : 'restore'
+      return this.done ? 'redo' : 'restore'
     },
     labelClass: function() {
       return this.todoTempCopy.type + 'Title';
@@ -100,13 +107,13 @@ export default {
       item.save();
     },
     deleteTodo: function(item) {
-    	item.set('enable',false);
-    	item.save();
+      item.set('enable', false);
+      item.save();
     },
     editTodo: function(item) {
       var _this = this;
       this.todoTemp = item;
-      item = item.toJSON()
+      item = item.toJSON();
       Object.keys(item).forEach(function(key) {
         _this.todoTempCopy[key] = item[key];
       })
@@ -117,14 +124,57 @@ export default {
     },
     saveTodoChange: function() {
       var _this = this;
-      delete _this.todoTempCopy.objectId;
-      delete _this.todoTempCopy.createdAt;
-      delete _this.todoTempCopy.updatedAt;
+      delete this.todoTempCopy.objectId;
+      delete this.todoTempCopy.createdAt;
+      delete this.todoTempCopy.updatedAt;
       Object.keys(this.todoTempCopy).forEach(function(key) {
         _this.todoTemp.set(key, _this.todoTempCopy[key])
       })
       _this.todoTemp.save();
       this.closeEditTodoDialog();
+    },
+    nextTab: function() {
+      console.log('nextTab');
+      switch (this.type) {
+        case "ImpEmg":
+          this.$emit('typeChange', "ImpNotEmg");
+          break;
+        case "ImpNotEmg":
+          this.$emit('typeChange', "NotImpEmg");
+          break;
+        case "NotImpEmg":
+          this.$emit('typeChange', "NotImpNotEmg");
+          break;
+        case "NotImpNotEmg":
+          this.$emit('typeChange', "ImpEmg");
+          break;
+        default:
+          this.$emit('typeChange', "ImpEmg");
+          break;
+      }
+    },
+    previousTab: function() {
+      switch (this.type) {
+        case "ImpEmg":
+          this.$emit('typeChange', "NotImpNotEmg");
+          break;
+        case "ImpNotEmg":
+          this.$emit('typeChange', "ImpEmg");
+          break;
+        case "NotImpEmg":
+          this.$emit('typeChange', "ImpNotEmg");
+          break;
+        case "NotImpNotEmg":
+          this.$emit('typeChange', "NotImpEmg");
+          break;
+        default:
+          this.$emit('typeChange', "ImpEmg");
+          break;
+      }
+    },
+    addTodoItem: function() {
+    	console.log('dbl tap');
+      this.$emit('addTodoItem');
     }
   }
 }
@@ -150,7 +200,8 @@ export default {
 
 /* fade transition */
 
-.fade-left-leave-active {
+
+/*.fade-left-leave-active {
   transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
+}*/
 </style>

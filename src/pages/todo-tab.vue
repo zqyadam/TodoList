@@ -5,7 +5,7 @@
       <mu-flexbox-item>
         <mu-appbar title="TodoList">
           <mu-icon-button icon='menu' slot="left" @click="showDrawer" />
-          <mu-icon-button icon="add" mini slot="right" tooltip="添加计划" @click="AddTodoItem">
+          <mu-icon-button icon="add" mini slot="right" tooltip="添加计划" @click="AddTodoItemDialogShow">
           </mu-icon-button>
         </mu-appbar>
       </mu-flexbox-item>
@@ -21,26 +21,20 @@
       </mu-flexbox-item>
       <!-- tabs end -->
       <!-- list  -->
-      <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch">
-        <v-touch v-on:swipeleft="nextTab" v-on:swiperight="previousTab" class="fit scroll" :swipe-options="{threshold:30}">
-          <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
-          <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" type="ImpNotEmg" noTodoTipClass="ImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
-          <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" type="NotImpEmg" noTodoTipClass="NotImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
-          <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" type="NotImpNotEmg" noTodoTipClass="NotImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
-        </v-touch>
-      </mu-flexbox>
-      <!-- list end -->
+      <z-list :todos="todos" :done="bottomNav" :type="type" :types="types" @typeChange="changeTypeTo" @addTodoItem="add"></z-list>
       <!-- bottom nav -->
-      <mu-paper class="fitWidth">
-        <v-touch @swipeleft="toggleBottomNavStatusPanel" @swiperight="toggleBottomNavStatusPanel">
-          <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
-            <mu-bottom-nav-item :value="false" title="未完成" icon="restore" />
-            <mu-bottom-nav-item :value="true" title="已完成" icon="favorite" />
-          </mu-bottom-nav>
-        </v-touch>
-      </mu-paper>
-      <!-- bottom nav end -->
-    </mu-flexbox>
+    <mu-paper class="fitWidth">
+      <v-touch @swipeleft="toggleBottomNavStatusPanel" @swiperight="toggleBottomNavStatusPanel">
+        <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
+          <mu-bottom-nav-item :value="false" title="未完成" icon="restore" />
+          <mu-bottom-nav-item :value="true" title="已完成" icon="favorite" />
+        </mu-bottom-nav>
+      </v-touch>
+    </mu-paper>
+    <!-- bottom nav end -->
+      
+      
+      
     <!--**************************** 默认不显示 ******************************-->
     <!-- drawer left -->
     <mu-drawer :open="drawer" :docked="false" @close="drawer=false">
@@ -110,26 +104,26 @@ export default {
       text: function() {
         return this.types[this.type]
       },
-      ImpEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "ImpEmg";
-        })
-      },
-      ImpNotEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "ImpNotEmg";
-        })
-      },
-      NotImpEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "NotImpEmg";
-        })
-      },
-      NotImpNotEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "NotImpNotEmg";
-        })
-      }
+      // ImpEmgTodos: function() {
+      //   return this.todos.filter(function(item) {
+      //     return item.attributes.type == "ImpEmg";
+      //   })
+      // },
+      // ImpNotEmgTodos: function() {
+      //   return this.todos.filter(function(item) {
+      //     return item.attributes.type == "ImpNotEmg";
+      //   })
+      // },
+      // NotImpEmgTodos: function() {
+      //   return this.todos.filter(function(item) {
+      //     return item.attributes.type == "NotImpEmg";
+      //   })
+      // },
+      // NotImpNotEmgTodos: function() {
+      //   return this.todos.filter(function(item) {
+      //     return item.attributes.type == "NotImpNotEmg";
+      //   })
+      // }
     },
     methods: {
       showDrawer: function() {
@@ -154,7 +148,7 @@ export default {
       handleTabChange: function(val) {
         this.type = val;
       },
-      AddTodoItem: function() {
+      AddTodoItemDialogShow: function(type) {
         this.radioValue = this.type;
         this.showAddTodoItemDialog = true;
       },
@@ -179,53 +173,19 @@ export default {
         }, function(err) {
           alert("数据保存失败" + err.message)
         })
-        
-      },
-      nextTab: function() {
-        let type = this.type;
-        switch (type) {
-          case "ImpEmg":
-            this.type = "ImpNotEmg";
-            break;
-          case "ImpNotEmg":
-            this.type = "NotImpEmg";
-            break;
-          case "NotImpEmg":
-            this.type = "NotImpNotEmg";
-            break;
-          case "NotImpNotEmg":
-            this.type = "ImpEmg";
-            break;
-          default:
-            this.type = "ImpEmg";
-            break;
-        }
-      },
-      previousTab: function() {
-        let type = this.type;
-        switch (type) {
-          case "ImpEmg":
-            this.type = "NotImpNotEmg";
-            break;
-          case "ImpNotEmg":
-            this.type = "ImpEmg";
-            break;
-          case "NotImpEmg":
-            this.type = "ImpNotEmg";
-            break;
-          case "NotImpNotEmg":
-            this.type = "NotImpEmg";
-            break;
-          default:
-            this.type = "ImpEmg";
-            break;
-        }
       },
       toggleBottomNavStatus: function(val) {
         this.bottomNav = val;
       },
       toggleBottomNavStatusPanel: function() {
         this.bottomNav = !this.bottomNav;
+      },
+      changeTypeTo:function(type) {
+      	this.type = type;
+      },
+      add:function() {
+      	console.log('dbl tap recevied');
+      	this.AddTodoItemDialogShow();
       }
     },
     components: {
@@ -240,18 +200,7 @@ export default {
 }
 </script>
 <style scoped>
-.fit {
-  width: 100%;
-  height: 100%;
-}
 
-.fitWidth {
-  width: 100%;
-}
-
-.scroll {
-  overflow: auto;
-}
 
 .tabBar {
   background-color: #f5f5f5;

@@ -15,7 +15,7 @@ import Register from './pages/login/register'
 import TodoTab from './pages/todo-tab'
 import Edit from './pages/edit'
 // load api
-import { getlocalStorageItemName, isLogedin } from './api/api'
+import { isLogedin } from './api/api'
 // install plugins
 Vue.use(VueRouter);
 Vue.use(MuseUI);
@@ -57,13 +57,15 @@ let router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  console.log('from');
+  console.log(from);
+  console.log('to');
+  console.log(to);
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // let user = JSON.parse(localStorage.getItem(getlocalStorageItemName()));
-    // if (!user) {
-    //   next({ path: '/login', });
-    // }
-    if (!isLogedin) {
-      next({ path: '/login' });
+    console.log(isLogedin());
+    if (!isLogedin()) {
+      console.log('redirecting to login page');
+      next({ name: 'login' });
     }
   }
   next();
