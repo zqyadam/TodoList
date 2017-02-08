@@ -69,12 +69,16 @@ export default {
         this.isBtnLoading = true;
         requestLogin(loginParams).then(function(loginedUser) {
           _this.isBtnLoading = false;
+          console.log('login success');
+          console.log(_this.$router);
           _this.$router.push({
             name: 'todo'
           });
           // localStorage.setItem('user', JSON.stringify(user));
         }, function(error) {
           _this.isBtnLoading = false;
+          console.log('login error');
+          console.log(error);
           _this.username = "";
           _this.password = "";
           _this.showLoginFailDialog = true;
