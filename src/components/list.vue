@@ -2,12 +2,16 @@
   <div>
     <mu-list v-if="todoData.length">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 7475857... link to leancloud
       <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
       <!-- <transition-group :name="fadeDirection"> -->
       <mu-list-item v-for="(todo,index) in todoData" :title="todo.content" :key="index">
         <mu-icon :value="iconType" slot="left" @click="toogleStatus(todo)" />
         <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
         <mu-icon-button v-show="!showDeleteBtn" icon="mode_edit" slot="right" @click="editTodo(todo)" touch/>
+<<<<<<< HEAD
       </mu-list-item>
       <!-- </transition-group> -->
       <!-- </v-touch> -->
@@ -18,6 +22,11 @@
         <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
       </mu-list-item>
 >>>>>>> parent of 64409a9... to revert
+=======
+      </mu-list-item>
+      <!-- </transition-group> -->
+      <!-- </v-touch> -->
+>>>>>>> parent of 7475857... link to leancloud
     </mu-list>
     <div v-else class="no-todo-tip">
       还没有<span :class="noTodoTipClass"><span style="font-weight:bold;">{{ !showDeleteBtn?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
@@ -57,6 +66,7 @@ export default {
       editTodoDialog: false,
       todoTempCopy: {
 <<<<<<< HEAD
+<<<<<<< HEAD
       	content:'',
       	type:'',
       	status:false
@@ -65,6 +75,11 @@ export default {
         type: '',
         status: false
 >>>>>>> parent of 64409a9... to revert
+=======
+      	content:'',
+      	type:'',
+      	status:false
+>>>>>>> parent of 7475857... link to leancloud
       },
       todoTemp: null
     }
@@ -94,11 +109,15 @@ export default {
       let _this = this;
       return this.todos.filter(function(item) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return item.status === _this.showDeleteBtn;
 =======
       	item = item.toJSON();
         return (item.status === _this.showDeleteBtn) && (item.enable);
 >>>>>>> parent of 64409a9... to revert
+=======
+        return item.status === _this.showDeleteBtn;
+>>>>>>> parent of 7475857... link to leancloud
       })
 
     },
@@ -120,6 +139,7 @@ export default {
     },
     deleteTodo: function(item) {
 <<<<<<< HEAD
+<<<<<<< HEAD
       console.log('delete todo');
       item.status = false;
 =======
@@ -139,6 +159,16 @@ export default {
         _this.todoTempCopy[key] = item[key];
       })
 >>>>>>> parent of 64409a9... to revert
+=======
+      console.log('delete todo');
+      item.status = false;
+    },
+    editTodo: function(item) {
+      this.todoTemp = item;
+      this.todoTempCopy.content = item.content;
+      this.todoTempCopy.type = item.type;
+      this.todoTempCopy.status = item.status;
+>>>>>>> parent of 7475857... link to leancloud
       this.editTodoDialog = true;
     },
     closeEditTodoDialog: function() {
@@ -146,10 +176,14 @@ export default {
     },
     saveTodoChange: function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 7475857... link to leancloud
       this.todoTemp.content = this.todoTempCopy.content;
       this.todoTemp.type = this.todoTempCopy.type;
       this.todoTemp.status = this.todoTempCopy.status;
       this.todos = this.todos;
+<<<<<<< HEAD
 =======
       var _this = this;
       delete _this.todoTempCopy.objectId;
@@ -160,6 +194,8 @@ export default {
       })
       _this.todoTemp.save();
 >>>>>>> parent of 64409a9... to revert
+=======
+>>>>>>> parent of 7475857... link to leancloud
       this.closeEditTodoDialog();
     }
   }

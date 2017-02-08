@@ -24,6 +24,7 @@ export let logOut = function() {
 export let saveTodoItem = function(item) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 // start up->pullTodos->update local data
 // data change -> saveToLocal -> commitTodos()
@@ -44,4 +45,6 @@ export let LoadServerTodos = function() {
 	 var query = new AV.Query('Todo');
 	 return query.equalTo('owner',uid).find();
 >>>>>>> parent of 64409a9... to revert
+=======
+>>>>>>> parent of 7475857... link to leancloud
 }

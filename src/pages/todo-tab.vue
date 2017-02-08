@@ -174,6 +174,7 @@ export default {
       },
       ImpEmgTodos: function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         // console.log(this.ImpEmgTodos);
         return this.todos.filter(function(item) {
           return item.type == "ImpEmg";
@@ -196,24 +197,34 @@ export default {
         return this.todos.filter(function(item) {
           return item.type == "NotImpNotEmg";
 =======
+=======
+        // console.log(this.ImpEmgTodos);
+>>>>>>> parent of 7475857... link to leancloud
         return this.todos.filter(function(item) {
-          return item.attributes.type == "ImpEmg";
+          return item.type == "ImpEmg";
         })
       },
       ImpNotEmgTodos: function() {
+        // console.log(this.ImpNotEmgTodos);
         return this.todos.filter(function(item) {
-          return item.attributes.type == "ImpNotEmg";
+          return item.type == "ImpNotEmg";
         })
       },
       NotImpEmgTodos: function() {
+        // console.log(this.NotImpEmgTodos);
         return this.todos.filter(function(item) {
-          return item.attributes.type == "NotImpEmg";
+          return item.type == "NotImpEmg";
         })
       },
       NotImpNotEmgTodos: function() {
+        // console.log(this.NotImpNotEmgTodos);
         return this.todos.filter(function(item) {
+<<<<<<< HEAD
           return item.attributes.type == "NotImpNotEmg";
 >>>>>>> parent of 64409a9... to revert
+=======
+          return item.type == "NotImpNotEmg";
+>>>>>>> parent of 7475857... link to leancloud
         })
       }
     },
@@ -259,6 +270,7 @@ export default {
         this.TodoItemDialogClose();
         this.content = "";
 <<<<<<< HEAD
+<<<<<<< HEAD
         console.log(todo);
       },
       nextTab: function() {
@@ -274,6 +286,12 @@ export default {
       },
       nextTab: function() {
 >>>>>>> parent of 64409a9... to revert
+=======
+        console.log(todo);
+      },
+      nextTab: function() {
+        console.log('swiping left');
+>>>>>>> parent of 7475857... link to leancloud
         let type = this.type;
         switch (type) {
           case "ImpEmg":
@@ -295,9 +313,13 @@ export default {
       },
       previousTab: function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         console.log('swiping right');
 =======
 >>>>>>> parent of 64409a9... to revert
+=======
+        console.log('swiping right');
+>>>>>>> parent of 7475857... link to leancloud
         let type = this.type;
         switch (type) {
           case "ImpEmg":

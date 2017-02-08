@@ -55,9 +55,13 @@ let router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
   console.log(to);
 =======
 >>>>>>> parent of 64409a9... to revert
+=======
+  console.log(to);
+>>>>>>> parent of 7475857... link to leancloud
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // let user = JSON.parse(localStorage.getItem(getlocalStorageItemName()));
     // if (!user) {
