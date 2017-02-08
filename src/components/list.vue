@@ -1,12 +1,16 @@
 <template>
   <div>
+   {{ todos }}
     <mu-list v-if="todoData.length">
       <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
       <!-- <transition-group :name="fadeDirection"> -->
       <mu-list-item v-for="(todo,index) in todoData" :title="todo.content" :key="index">
+
         <mu-icon :value="iconType" slot="left" @click="toogleStatus(todo)" />
         <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
         <mu-icon-button v-show="!showDeleteBtn" icon="mode_edit" slot="right" @click="editTodo(todo)" touch/>
+        <span style="color:#ccc;" slot="describe">更新时间：{{ new Date() }}</span>
+       
       </mu-list-item>
       <!-- </transition-group> -->
       <!-- </v-touch> -->
