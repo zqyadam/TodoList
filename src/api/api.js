@@ -6,8 +6,10 @@ AV.init({
   appId: APP_ID,
   appKey: APP_KEY
 });
-let Todo = AV.Object.extend('Todo');
+// localStorage.setItem('debug', 'leancloud*');
+export let Todo = AV.Object.extend('Todo');
 
+/* User Operate  */
 export let requestLogin = function(loginParams) {
   return AV.User.logIn(loginParams.username, loginParams.password);
 }
@@ -21,6 +23,31 @@ export let logOut = function() {
   AV.User.logOut();
 }
 
-export let saveTodoItem = function(item) {
+/* Todo Operate */
+// sync
+// commitTodos
+// pullTodos
+// saveToLocal
 
+// start up->pullTodos->update local data
+// data change -> saveToLocal -> commitTodos()
+export let AddTodoItem = function(item) {
+  var todo = new Todo(item);
+  // todo.fetchWhenSave = true;
+  todo.set('owner', getCurrentUser().id);
+  return todo.save();
+}
+
+export let SaveTodoItem = function(item) {
+	var todo = new Todo(item);
+	return todo.save();
+}
+
+export let LoadServerTodos = function() {
+	var uid = getCurrentUser().id;
+   var ownerQuery = new AV.Query('Todo');
+   ownerQuery.equalTo('owner',uid);
+	 var enableQuery = new AV.Query('Todo');
+   enableQuery.equalTo('enable',true);
+	 return new AV.Query.and(ownerQuery, enableQuery).find();
 }

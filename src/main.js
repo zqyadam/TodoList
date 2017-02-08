@@ -19,8 +19,11 @@ import { getlocalStorageItemName, isLogedin } from './api/api'
 // install plugins
 Vue.use(VueRouter);
 Vue.use(MuseUI);
+VueTouch.registerCustomEvent('dbltap', {
+  type: 'tap',
+  taps: 2
+})
 Vue.use(VueTouch,{name: 'v-touch'});
-
 
 const routes = [{
   path: '/login',
@@ -54,7 +57,6 @@ let router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to);
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // let user = JSON.parse(localStorage.getItem(getlocalStorageItemName()));
     // if (!user) {
@@ -64,7 +66,6 @@ router.beforeEach((to, from, next) => {
       next({ path: '/login' });
     }
   }
-  console.log('routing to ' + to.fullPath);
   next();
 });
 new Vue({
