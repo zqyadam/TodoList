@@ -1,6 +1,7 @@
 <template>
   <div>
     <mu-list v-if="todoData.length">
+<<<<<<< HEAD
       <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
       <!-- <transition-group :name="fadeDirection"> -->
       <mu-list-item v-for="(todo,index) in todoData" :title="todo.content" :key="index">
@@ -10,6 +11,13 @@
       </mu-list-item>
       <!-- </transition-group> -->
       <!-- </v-touch> -->
+=======
+      <mu-list-item v-for="(todo,index) in todoData" :title="todo.attributes.content" :key="index">
+        <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
+        <mu-icon-button icon="delete" @click="deleteTodo(todo)" v-show="showDeleteBtn" touch slot="right"></mu-icon-button>
+        <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
+      </mu-list-item>
+>>>>>>> parent of 64409a9... to revert
     </mu-list>
     <div v-else class="no-todo-tip">
       还没有<span :class="noTodoTipClass"><span style="font-weight:bold;">{{ !showDeleteBtn?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
@@ -48,9 +56,15 @@ export default {
     return {
       editTodoDialog: false,
       todoTempCopy: {
+<<<<<<< HEAD
       	content:'',
       	type:'',
       	status:false
+=======
+        content: '',
+        type: '',
+        status: false
+>>>>>>> parent of 64409a9... to revert
       },
       todoTemp: null
     }
@@ -79,7 +93,12 @@ export default {
     todoData: function() {
       let _this = this;
       return this.todos.filter(function(item) {
+<<<<<<< HEAD
         return item.status === _this.showDeleteBtn;
+=======
+      	item = item.toJSON();
+        return (item.status === _this.showDeleteBtn) && (item.enable);
+>>>>>>> parent of 64409a9... to revert
       })
 
     },
@@ -100,24 +119,47 @@ export default {
       // }
     },
     deleteTodo: function(item) {
+<<<<<<< HEAD
       console.log('delete todo');
       item.status = false;
+=======
+    	item.set('enable',false);
+    	item.save();
+>>>>>>> parent of 64409a9... to revert
     },
     editTodo: function(item) {
       this.todoTemp = item;
+<<<<<<< HEAD
       this.todoTempCopy.content = item.content;
       this.todoTempCopy.type = item.type;
       this.todoTempCopy.status = item.status;
+=======
+      item = item.toJSON()
+      Object.keys(item).forEach(function(key) {
+        _this.todoTempCopy[key] = item[key];
+      })
+>>>>>>> parent of 64409a9... to revert
       this.editTodoDialog = true;
     },
     closeEditTodoDialog: function() {
       this.editTodoDialog = false;
     },
     saveTodoChange: function() {
+<<<<<<< HEAD
       this.todoTemp.content = this.todoTempCopy.content;
       this.todoTemp.type = this.todoTempCopy.type;
       this.todoTemp.status = this.todoTempCopy.status;
       this.todos = this.todos;
+=======
+      var _this = this;
+      delete _this.todoTempCopy.objectId;
+      delete _this.todoTempCopy.createdAt;
+      delete _this.todoTempCopy.updatedAt;
+      Object.keys(this.todoTempCopy).forEach(function(key) {
+        _this.todoTemp.set(key, _this.todoTempCopy[key])
+      })
+      _this.todoTemp.save();
+>>>>>>> parent of 64409a9... to revert
       this.closeEditTodoDialog();
     }
   }

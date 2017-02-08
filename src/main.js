@@ -54,7 +54,10 @@ let router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+<<<<<<< HEAD
   console.log(to);
+=======
+>>>>>>> parent of 64409a9... to revert
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // let user = JSON.parse(localStorage.getItem(getlocalStorageItemName()));
     // if (!user) {
