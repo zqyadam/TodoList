@@ -173,7 +173,6 @@ export default {
         return this.types[this.type]
       },
       ImpEmgTodos: function() {
-<<<<<<< HEAD
         // console.log(this.ImpEmgTodos);
         return this.todos.filter(function(item) {
           return item.type == "ImpEmg";
@@ -195,25 +194,6 @@ export default {
         // console.log(this.NotImpNotEmgTodos);
         return this.todos.filter(function(item) {
           return item.type == "NotImpNotEmg";
-=======
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "ImpEmg";
-        })
-      },
-      ImpNotEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "ImpNotEmg";
-        })
-      },
-      NotImpEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "NotImpEmg";
-        })
-      },
-      NotImpNotEmgTodos: function() {
-        return this.todos.filter(function(item) {
-          return item.attributes.type == "NotImpNotEmg";
->>>>>>> parent of 64409a9... to revert
         })
       }
     },
@@ -258,22 +238,10 @@ export default {
         this.todos.push(todo);
         this.TodoItemDialogClose();
         this.content = "";
-<<<<<<< HEAD
         console.log(todo);
       },
       nextTab: function() {
         console.log('swiping left');
-=======
-        AddTodoItem(todo).then(function(item) {
-          _this.todos.push(item);
-          _this.bottomNav = false;
-        }, function(err) {
-          alert("数据保存失败" + err.message)
-        })
-        
-      },
-      nextTab: function() {
->>>>>>> parent of 64409a9... to revert
         let type = this.type;
         switch (type) {
           case "ImpEmg":
@@ -294,10 +262,7 @@ export default {
         }
       },
       previousTab: function() {
-<<<<<<< HEAD
         console.log('swiping right');
-=======
->>>>>>> parent of 64409a9... to revert
         let type = this.type;
         switch (type) {
           case "ImpEmg":

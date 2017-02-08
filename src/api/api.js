@@ -23,25 +23,4 @@ export let logOut = function() {
 
 export let saveTodoItem = function(item) {
 
-<<<<<<< HEAD
-=======
-// start up->pullTodos->update local data
-// data change -> saveToLocal -> commitTodos()
-export let AddTodoItem = function(item) {
-  var todo = new Todo(item);
-  // todo.fetchWhenSave = true;
-  todo.set('owner', getCurrentUser().id);
-  return todo.save();
-}
-
-export let SaveTodoItem = function(item) {
-	var todo = new Todo(item);
-	return todo.save();
-}
-
-export let LoadServerTodos = function() {
-	var uid = getCurrentUser().id;
-	 var query = new AV.Query('Todo');
-	 return query.equalTo('owner',uid).find();
->>>>>>> parent of 64409a9... to revert
 }
