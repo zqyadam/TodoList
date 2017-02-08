@@ -45,9 +45,6 @@ export let SaveTodoItem = function(item) {
 
 export let LoadServerTodos = function() {
 	var uid = getCurrentUser().id;
-	 var ownerQuery = new AV.Query('Todo');
-	 ownerQuery.equalTo('owner',uid);
-	 var enableQuery = new AV.Query('Todo');
-	 enableQuery.equalTo('enable',true);
-	 return AV.Query.and(ownerQuery, enableQuery).find();
+	 var query = new AV.Query('Todo');
+	 return query.equalTo('owner',uid).find();
 }
