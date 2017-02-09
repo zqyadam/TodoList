@@ -5,8 +5,9 @@ import VueRouter from 'vue-router';
 import VueTouch from 'vue-touch';
 
 //  load UI components
-import MuseUI from 'muse-ui'
-import 'muse-ui/dist/muse-ui.css'
+import MuseUI from 'muse-ui';
+import 'muse-ui/dist/muse-ui.css';
+
 import App from './App'
 // load pages
 import Login from './pages/login/login'

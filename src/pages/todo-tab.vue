@@ -22,8 +22,8 @@
       <!-- tabs end -->
       <!-- list  -->
       <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch">
-        <v-touch v-on:swipeleft="nextTab" v-on:swiperight="previousTab" class="fit scroll" :swipe-options="{threshold:30}" v-on:press="AddTodoItemDialogShow">
-          <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
+        <v-touch v-on:swipeleft="nextTab" v-on:swiperight="previousTab" class="fit scroll" :swipe-options="{threshold:30}" v-on:dbltap="AddTodoItemDialogShow">
+          <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" @getDoneCount="getDoneCount" />
           <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" type="ImpNotEmg" noTodoTipClass="ImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
           <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" type="NotImpEmg" noTodoTipClass="NotImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
           <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" type="NotImpNotEmg" noTodoTipClass="NotImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
@@ -32,10 +32,10 @@
       <!-- list end -->
       <!-- bottom nav -->
       <mu-paper class="fitWidth">
-        <v-touch @swipeleft="nextTab" @swiperight="previousTab">
-          <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
-            <mu-bottom-nav-item :value="false" title="未完成" icon="restore" />
-            <mu-bottom-nav-item :value="true" title="已完成" icon="favorite" />
+        <v-touch @swipeleft="nextTab" @swiperight="previousTab" >
+          <mu-bottom-nav  :value="bottomNav" @change="toggleBottomNavStatus">
+            <mu-bottom-nav-item :value="false" :title="'未完成('+undoneCount+')'" icon="restore" />
+            <mu-bottom-nav-item :value="true" :title="'已完成('+doneCount+')'" icon="favorite" />
           </mu-bottom-nav>
         </v-touch>
       </mu-paper>
@@ -59,8 +59,8 @@
     </mu-dialog>
     <!-- confirm logout dialog end -->
     <!-- add Todo Item dialog -->
-    <mu-dialog :open="showAddTodoItemDialog" title="添加事项" >
-      <mu-text-field hintText="待办事项" fullWidth v-model="content" />
+    <mu-dialog :open="showAddTodoItemDialog" title="添加事项">
+      <mu-text-field hintText="待办事项" fullWidth v-model="content" multiLine :rows="2" :rowsMax="4" />
       <mu-flexbox orient="vertical" align="flex-start">
         <mu-radio :label="types['ImpEmg']" name="type" nativeValue="ImpEmg" v-model="type" labelClass="ImpEmgTitle" />
         <mu-radio :label="types['ImpNotEmg']" name="type" nativeValue="ImpNotEmg" v-model="type" labelClass="ImpNotEmgTitle" />
@@ -81,7 +81,7 @@ import {
   AddTodoItem,
   LoadServerTodos
 } from '../api/api';
-import List from '../components/list'
+import List from '../components/list';
 export default {
   data() {
       return {
@@ -98,7 +98,9 @@ export default {
         type: 'ImpEmg',
         bottomNav: false,
         todos: [],
-        content: ''
+        content: '',
+        doneCount:0,
+        undoneCount:0
       }
     },
     computed: {
@@ -179,7 +181,7 @@ export default {
         }, function(err) {
           alert("数据保存失败" + err.message)
         })
-        
+
       },
       nextTab: function() {
         let type = this.type;
@@ -227,15 +229,19 @@ export default {
       toggleBottomNavStatusPanel: function() {
         this.bottomNav = !this.bottomNav;
       },
+      getDoneCount:function(doneCount,total) {
+        this.doneCount = doneCount;
+        this.undoneCount = total - doneCount;
+      }
     },
     components: {
       'z-list': List
     },
-    mounted:function() {
-    	var _this = this;
-    	LoadServerTodos().then(function(todos) {
-    		_this.todos = todos;
-    	})
+    mounted: function() {
+      var _this = this;
+      LoadServerTodos().then(function(todos) {
+        _this.todos = todos;
+      })
     }
 }
 </script>

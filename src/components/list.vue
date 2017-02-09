@@ -1,27 +1,28 @@
 <template>
   <div>
-      <mu-list v-if="todoData.length">
-        <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
-        <!-- <transition-group :name="fadeDirection"> -->
-        <mu-list-item v-for="(todo,index) in todoData" :title="todo.attributes.content" :key="index">
+    <mu-list v-if="todoData.length">
+      <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
+      <!-- <transition-group :name="fadeDirection"> -->
+      <v-touch v-on:press="editTodo(todo)" v-for="(todo,index) in todoData" >
+        <mu-list-item :title="todo.attributes.content" :key="index">
           <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
           <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
           <!-- <mu-icon-button v-show="!showDeleteBtn" icon="mode_edit" slot="right" @click="editTodo(todo)" touch :style="{'margin-right':showDeleteBtn?'60px':'0px'}"/> -->
           <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
           <span style="color:#ccc;" slot="describe">更新时间：{{ new Date(todo.updatedAt).toLocaleString() }}</span>
         </mu-list-item>
-      </mu-list>
-      <div v-else class="no-todo-tip">
-        还没有<span :class="noTodoTipClass"><span style="font-weight:bold;">{{ !showDeleteBtn?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
-      </div>
-   
+      </v-touch>
+    </mu-list>
+    <div v-else class="no-todo-tip">
+      还没有<span :class="noTodoTipClass"><span style="font-weight:bold;">{{ !showDeleteBtn?"未完成":"已完成" }}</span>的[{{ types[type] }}]</span>事项，赶紧添加一个吧~
+    </div>
     <!--************************** 不显示内容 ****************************-->
     <!-- edit Todo Item dialog -->
     <mu-dialog :open="editTodoDialog" title="修改Todo" @close="closeEditTodoDialog">
       <mu-flexbox orient="vertical" align="stretch">
         <!-- 编辑Todo -->
         <mu-flexbox-item>
-          <mu-text-field label="编辑内容" hintText="输入Todo内容" fullWidth v-model="todoTempCopy.content" />
+          <mu-text-field label="编辑内容" hintText="输入Todo内容" fullWidth v-model="todoTempCopy.content" multiLine :rows="2" :rowsMax="4"/>
         </mu-flexbox-item>
         <!-- 选择类型 -->
         <mu-flexbox-item>
@@ -83,11 +84,12 @@ export default {
   computed: {
     todoData: function() {
       let _this = this;
-      return this.todos.filter(function(item) {
+      let todoData = this.todos.filter(function(item) {
         item = item.toJSON();
         return (item.status === _this.showDeleteBtn) && (item.enable);
       })
-
+      this.$emit('todoDataChange', todoData.length);
+      return todoData;
     },
     fadeDirection: function() {
       return this.showDeleteBtn ? 'fade-right' : 'fade-left';
@@ -97,6 +99,12 @@ export default {
     },
     labelClass: function() {
       return this.todoTempCopy.type + 'Title';
+    }
+  },
+  watch: {
+    todoData: function() {
+      let doneCount = this.showDeleteBtn ? this.todoData.length : (this.todos.length - this.todoData.length);
+      this.$emit('getDoneCount', doneCount, this.todos.length);
     }
   },
   methods: {
@@ -131,8 +139,9 @@ export default {
       _this.todoTemp.save();
       this.closeEditTodoDialog();
     },
-    ccc: function() {
+    ccc: function(todo) {
       console.log('dbl tap');
+      console.log(todo.toJSON());
     }
   }
 }

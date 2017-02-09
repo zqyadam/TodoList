@@ -1,0 +1,11 @@
+{
+  "index.html": {
+    "resources": [
+      "static/js/manifest.4eeb49e348ce8a317644.js",
+      "static/js/app.5f8c83b613e784bcda8d.js",
+      "static/css/app.e628931e105e512ae824c900d845106b.css",
+      "static/js/vendor.910d0c6b6c010e851566.js"
+    ],
+    "refer": []
+  }
+}
