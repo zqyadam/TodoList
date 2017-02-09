@@ -59,8 +59,8 @@
     </mu-dialog>
     <!-- confirm logout dialog end -->
     <!-- add Todo Item dialog -->
-    <mu-dialog :open="showAddTodoItemDialog" title="添加事项">
-      <mu-text-field hintText="待办事项" fullWidth v-model="content" multiLine :rows="2" :rowsMax="4" />
+    <mu-dialog :open="showAddTodoItemDialog" title="添加Todo">
+      <mu-text-field hintText="添加待办事项" fullWidth v-model="content" multiLine :rows="2" :rowsMax="4" />
       <mu-flexbox orient="vertical" align="flex-start">
         <mu-radio :label="types['ImpEmg']" name="type" nativeValue="ImpEmg" v-model="type" labelClass="ImpEmgTitle" />
         <mu-radio :label="types['ImpNotEmg']" name="type" nativeValue="ImpNotEmg" v-model="type" labelClass="ImpNotEmgTitle" />

@@ -1,6 +1,7 @@
 <template>
   <div>
     <mu-list v-if="todoData.length">
+      <mu-sub-header>{{ !showDeleteBtn?("未完成("+undoneCount+")"):("已完成("+doneCount+")") }}</mu-sub-header>
       <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
       <!-- <transition-group :name="fadeDirection"> -->
       <v-touch v-on:press="editTodo(todo)" v-for="(todo,index) in todoData" >
@@ -58,7 +59,9 @@ export default {
         type: '',
         status: false
       },
-      todoTemp: null
+      todoTemp: null,
+      doneCount:0,
+      undoneCount:0
     }
   },
   props: {
@@ -103,8 +106,9 @@ export default {
   },
   watch: {
     todoData: function() {
-      let doneCount = this.showDeleteBtn ? this.todoData.length : (this.todos.length - this.todoData.length);
-      this.$emit('getDoneCount', doneCount, this.todos.length);
+      this.doneCount = this.showDeleteBtn ? this.todoData.length : (this.todos.length - this.todoData.length);
+      this.undoneCount = this.todos.length - this.doneCount;
+      this.$emit('getDoneCount', this.doneCount, this.todos.length);
     }
   },
   methods: {
@@ -138,10 +142,6 @@ export default {
       })
       _this.todoTemp.save();
       this.closeEditTodoDialog();
-    },
-    ccc: function(todo) {
-      console.log('dbl tap');
-      console.log(todo.toJSON());
     }
   }
 }
