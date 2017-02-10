@@ -3,7 +3,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router';
 import VueTouch from 'vue-touch';
-
+// load local css icon
+import './assets/iconfont/material-icons.css'
 //  load UI components
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
@@ -17,6 +18,7 @@ import TodoTab from './pages/todo-tab'
 import Edit from './pages/edit'
 // load api
 import { getlocalStorageItemName, isLogedin } from './api/api'
+
 // install plugins
 Vue.use(VueRouter);
 Vue.use(MuseUI);

@@ -12,7 +12,6 @@ export default {
 }
 </script>
 <style>
-@import "https://fonts.googleapis.com/icon?family=Material+Icons";
 html,
 body {
   width: 100%;

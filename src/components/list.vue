@@ -10,7 +10,7 @@
           <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
           <!-- <mu-icon-button v-show="!showDeleteBtn" icon="mode_edit" slot="right" @click="editTodo(todo)" touch :style="{'margin-right':showDeleteBtn?'60px':'0px'}"/> -->
           <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
-          <span style="color:#ccc;" slot="describe">更新时间：{{ new Date(todo.updatedAt).toLocaleString() }}</span>
+          <span style="color:#ccc;" slot="describe">更新时间：{{     getUpdatedTime(todo) }}</span>
         </mu-list-item>
       </v-touch>
     </mu-list>
@@ -49,7 +49,7 @@
 import {
   SaveTodoItem
 } from '../api/api';
-
+import {dateFormat} from '../api/common';
 export default {
   data: function() {
     return {
@@ -142,6 +142,11 @@ export default {
       })
       _this.todoTemp.save();
       this.closeEditTodoDialog();
+    },
+    getUpdatedTime:function(todo) {
+      Date.prototype.format = dateFormat;
+      var updatedTime = new Date(todo.updatedAt).format("yyyy-MM-dd hh:mm:ss");
+      return updatedTime;
     }
   }
 }
