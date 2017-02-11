@@ -10,7 +10,7 @@
     <mu-row gutter>
       <mu-col width="100" tablet="70" desktop="33" class="center">
         <mu-raised-button :label="btnText" primary class="btn" :disabled="isBtnLoading" @click.native="login" />
-        <mu-raised-button label="注册" class="btn" />
+        <mu-raised-button label="注册" class="btn" @click.native="registe" />
       </mu-col>
     </mu-row>
     <!-- snackbar -->
@@ -79,6 +79,9 @@ export default {
           _this.password = "";
           _this.showLoginFailDialog = true;
         })
+      },
+      registe:function() {
+        this.$router.push({name:'registe'})
       },
       showSnackbar() {
         this.snackbar = true

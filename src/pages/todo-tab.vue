@@ -79,7 +79,8 @@ import {
   isLogedin,
   getCurrentUser,
   AddTodoItem,
-  LoadServerTodos
+  LoadServerTodos,
+  addRole
 } from '../api/api';
 import List from '../components/list';
 export default {
@@ -242,6 +243,7 @@ export default {
       LoadServerTodos().then(function(todos) {
         _this.todos = todos;
       })
+      // addRole()
     }
 }
 </script>

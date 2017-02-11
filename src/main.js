@@ -36,9 +36,9 @@ const routes = [{
     requiresAuth: false
   }
 }, {
-  path: '/register',
+  path: '/registe',
   component: Register,
-  name: 'register',
+  name: 'registe',
   meta: {
     requiresAuth: false
   }

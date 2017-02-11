@@ -62,3 +62,19 @@ export let LoadServerTodos = function() {
   enableQuery.equalTo('enable', true);
   return new AV.Query.and(ownerQuery, enableQuery).find();
 }
+
+export let addRole = function() {
+  var roleACL = new AV.ACL();
+  roleACL.setPublicReadAccess(false);
+  roleACL.setPublicWriteAccess(false);
+
+  roleACL.setWriteAccess(AV.User.current(),true);
+
+  var UserRole = new AV.Role('User',roleACL);
+  UserRole.save().then(function(role) {
+    console.log(role);
+  },function(err) {
+    console.log(err);
+  })
+}
+
