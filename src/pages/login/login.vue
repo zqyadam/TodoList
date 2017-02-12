@@ -3,35 +3,39 @@
     <mu-row gutter>
       <mu-col width="100" tablet="70" desktop="33" class="center">
         <img src="../../assets/logo.png" alt="">
-        <mu-text-field label="用户名" hintText="请输入用户名" type="text" icon="group" fullWidth v-model="username" />
-        <mu-text-field label="密码" hintText="请输入密码" type="password" icon="remove_red_eye" fullWidth v-model="password" />
+        <mu-text-field label="邮箱" hintText="请输入邮箱" type="email" icon="email" fullWidth v-model="email" :errorText="errorEmailMsg" />
+        <mu-text-field label="密码" hintText="请输入密码" type="password" icon="remove_red_eye" fullWidth v-model="password" :errorText="errorPasswordMsg" />
       </mu-col>
     </mu-row>
     <mu-row gutter>
       <mu-col width="100" tablet="70" desktop="33" class="center">
         <mu-raised-button :label="btnText" primary class="btn" :disabled="isBtnLoading" @click.native="login" />
-        <mu-raised-button label="注册" class="btn" @click.native="registe" />
+        <p>还没有账号？注册一个吧~
+          <mu-flat-button label="立即注册" secondary @click.native="registe" />
+        </p>
       </mu-col>
     </mu-row>
     <!-- snackbar -->
     <mu-snackbar v-if="snackbar" :message="emptyMessage" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
     <!-- login fail dialog  -->
     <mu-dialog :open="showLoginFailDialog" title="登录失败">
-      用户名或密码不正确，请重新输入。
-      <mu-flat-button label="确定" slot="actions" primary @click="closeLoginFailDialog" />
+      <span>{{ errorLoginMsg }}</span>
+      <mu-flat-button label="确定" primary @click="closeLoginFailDialog" secondary slot="actions" />
     </mu-dialog>
   </div>
 </template>
 <script>
 import {
   requestLogin,
-  isLogedin
+  isLogedin,
 } from '../../api/api'
-
+import {
+  emailCheck
+} from '../../api/common';
 export default {
   data() {
       return {
-        username: '',
+        email: '',
         password: '',
         // 是否显示snackbar
         snackbar: false,
@@ -40,20 +44,36 @@ export default {
         // 登录按钮状态
         isBtnLoading: false,
         // 是否显示登录失败对话框
-        showLoginFailDialog: false
+        showLoginFailDialog: false,
+        // 登录错误信息
+        errorLoginMsg: ""
       }
     },
     computed: {
       btnText: function() {
         if (this.isBtnLoading) return '登录中...';
         return '登录';
+      },
+      errorEmailMsg: function() {
+        if (this.email) {
+          return !emailCheck(this.email) ? "邮箱格式不正确" : "";
+        } else {
+          return ""
+        }
+      },
+      errorPasswordMsg: function() {
+        if (this.password) {
+          return (this.password.length < 6) ? "密码长度必须不能小于6位" : "";
+        } else {
+          return "";
+        }
       }
     },
     methods: {
       login: function() {
         let _this = this;
-        if (!this.username) {
-          this.emptyMessage = "请填写用户名";
+        if (!this.email) {
+          this.emptyMessage = "请填写邮箱";
           this.showSnackbar();
           return
         }
@@ -63,7 +83,7 @@ export default {
           return
         }
         let loginParams = {
-          username: this.username,
+          email: this.email,
           password: this.password
         };
         this.isBtnLoading = true;
@@ -73,15 +93,29 @@ export default {
             name: 'todo'
           });
           // localStorage.setItem('user', JSON.stringify(user));
-        }, function(error) {
+        }, function(err) {
+          switch (err.code) {
+            case 211:
+              _this.errorLoginMsg = "用户不存在，立即注册一个吧~";
+              _this.email = "";
+              _this.password = "";
+              break;
+            case 210:
+              _this.errorLoginMsg = "用户名与密码不匹配，请重新输入密码。";
+              _this.password = "";
+              break;
+            default:
+              _this.errorLoginMsg = "赶紧注册一个账号并开始使用吧~~";
+              break;
+          }
           _this.isBtnLoading = false;
-          _this.username = "";
-          _this.password = "";
           _this.showLoginFailDialog = true;
         })
       },
-      registe:function() {
-        this.$router.push({name:'registe'})
+      registe: function() {
+        this.$router.push({
+          name: 'registe'
+        })
       },
       showSnackbar() {
         this.snackbar = true

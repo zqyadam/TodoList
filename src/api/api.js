@@ -11,7 +11,7 @@ export let Todo = AV.Object.extend('Todo');
 
 /* User Operate  */
 export let requestLogin = function(loginParams) {
-  return AV.User.logIn(loginParams.username, loginParams.password);
+  return AV.User.logIn(loginParams.email, loginParams.password);
 }
 export let isLogedin = function() {
   return AV.User.current() ? true : false;
@@ -22,7 +22,13 @@ export let getCurrentUser = function() {
 export let logOut = function() {
   AV.User.logOut();
 }
-
+export let registeUser = function(userInfo) {
+  var user = new AV.User();
+  user.setUsername(userInfo.username);
+  user.setPassword(userInfo.password);
+  user.setEmail(userInfo.email);
+  return user.signUp();
+}
 /* Todo Operate */
 // sync
 // commitTodos
@@ -32,24 +38,23 @@ export let logOut = function() {
 // start up->pullTodos->update local data
 // data change -> saveToLocal -> commitTodos()
 export let AddTodoItem = function(item) {
-  var todo = new Todo(item);
   var acl = new AV.ACL();
   acl.setPublicReadAccess(false);
   acl.setPublicWriteAccess(false);
   acl.setWriteAccess(AV.User.current(), true);
   acl.setReadAccess(AV.User.current(), true);
+  var todo = new Todo(item);
   todo.setACL(acl);
   todo.set('owner', getCurrentUser().id);
   return todo.save();
 }
 
 export let SaveTodoItem = function(item) {
-  var todo = new Todo(item);
-  var acl = new AV.ACL();
   acl.setPublicReadAccess(false);
   acl.setPublicWriteAccess(false);
   acl.setWriteAccess(AV.User.current(), true);
   acl.setReadAccess(AV.User.current(), true);
+  var todo = new Todo(item);
   todo.setACL(acl);
   return todo.save();
 }

@@ -2,13 +2,11 @@
   <div>
     <mu-list v-if="todoData.length">
       <mu-sub-header>{{ !showDeleteBtn?("未完成("+undoneCount+")"):("已完成("+doneCount+")") }}</mu-sub-header>
-      <!-- <v-touch @panleft="showOperate" v-for="todo in todos" v-bind:panleft-options="{ direction: 'horizontal', threshold: 10 }"> -->
-      <!-- <transition-group :name="fadeDirection"> -->
       <v-touch v-on:press="editTodo(todo)" v-for="(todo,index) in todoData" >
-        <mu-list-item :title="todo.attributes.content" :key="index">
+        <mu-list-item :key="index">
+        <span slot="title" v-html="toMarked(todo.attributes.content)"></span>
           <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
           <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
-          <!-- <mu-icon-button v-show="!showDeleteBtn" icon="mode_edit" slot="right" @click="editTodo(todo)" touch :style="{'margin-right':showDeleteBtn?'60px':'0px'}"/> -->
           <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
           <span style="color:#ccc;" slot="describe">更新时间：{{     getUpdatedTime(todo) }}</span>
         </mu-list-item>
@@ -50,6 +48,7 @@ import {
   SaveTodoItem
 } from '../api/api';
 import {dateFormat} from '../api/common';
+import marked from 'marked'
 export default {
   data: function() {
     return {
@@ -147,6 +146,11 @@ export default {
       Date.prototype.format = dateFormat;
       var updatedTime = new Date(todo.updatedAt).format("yyyy-MM-dd hh:mm:ss");
       return updatedTime;
+    },
+    toMarked:function(markedText) {
+      let renderer = new marked.Renderer();
+      renderer.paragraph = text=>text;
+      return marked(markedText,{renderer:renderer });
     }
   }
 }

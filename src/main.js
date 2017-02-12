@@ -12,10 +12,15 @@ import 'muse-ui/dist/muse-ui.css';
 import App from './App'
 // load pages
 import Login from './pages/login/login'
-import Register from './pages/login/register'
-// import Todo from './pages/todo'
-import TodoTab from './pages/todo-tab'
-import Edit from './pages/edit'
+// 懒加载路由
+const Register = resolve=>{
+  require.ensure(['./pages/login/register'],()=>{
+    resolve(require('./pages/login/register'))
+  })
+}
+// 第二种写法
+const TodoTab = resolve => require(['./pages/todo-tab'], resolve);
+
 // load api
 import { getlocalStorageItemName, isLogedin } from './api/api'
 
