@@ -4,7 +4,7 @@
       <mu-col width="100" tablet="70" desktop="33" class="center">
         <img src="../../assets/logo.png" alt="">
         <mu-text-field label="邮箱" hintText="请输入邮箱" type="email" icon="email" fullWidth v-model="email" :errorText="errorEmailMsg" />
-        <mu-text-field label="密码" hintText="请输入密码" type="password" icon="remove_red_eye" fullWidth v-model="password" :errorText="errorPasswordMsg" />
+        <mu-text-field label="密码" hintText="请输入密码" type="password" icon="lock" fullWidth v-model="password" :errorText="errorPasswordMsg" />
       </mu-col>
     </mu-row>
     <mu-row gutter>

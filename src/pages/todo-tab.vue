@@ -21,25 +21,25 @@
       </mu-flexbox-item>
       <!-- tabs end -->
       <!-- list  -->
-      <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch">
+      <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch" orient="vertical" wrap>
         <v-touch v-on:swipeleft="nextTab" v-on:swiperight="previousTab" class="fit scroll" :swipe-options="{threshold:30}" v-on:dbltap="AddTodoItemDialogShow">
           <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" @getDoneCount="getDoneCount" />
           <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" type="ImpNotEmg" noTodoTipClass="ImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
           <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" type="NotImpEmg" noTodoTipClass="NotImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
           <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" type="NotImpNotEmg" noTodoTipClass="NotImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
         </v-touch>
+        <!-- bottom nav -->
+        <mu-paper class="fitWidth">
+          <v-touch @swipeleft="nextTab" @swiperight="previousTab">
+            <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
+              <mu-bottom-nav-item :value="false" :title="'未完成('+undoneCount+')'" icon="restore" />
+              <mu-bottom-nav-item :value="true" :title="'已完成('+doneCount+')'" icon="favorite" />
+            </mu-bottom-nav>
+          </v-touch>
+        </mu-paper>
+        <!-- bottom nav end -->
       </mu-flexbox>
       <!-- list end -->
-      <!-- bottom nav -->
-      <mu-paper class="fitWidth">
-        <v-touch @swipeleft="nextTab" @swiperight="previousTab" >
-          <mu-bottom-nav  :value="bottomNav" @change="toggleBottomNavStatus">
-            <mu-bottom-nav-item :value="false" :title="'未完成('+undoneCount+')'" icon="restore" />
-            <mu-bottom-nav-item :value="true" :title="'已完成('+doneCount+')'" icon="favorite" />
-          </mu-bottom-nav>
-        </v-touch>
-      </mu-paper>
-      <!-- bottom nav end -->
     </mu-flexbox>
     <!--**************************** 默认不显示 ******************************-->
     <!-- drawer left -->
@@ -100,8 +100,8 @@ export default {
         bottomNav: false,
         todos: [],
         content: '',
-        doneCount:0,
-        undoneCount:0
+        doneCount: 0,
+        undoneCount: 0
       }
     },
     computed: {
@@ -230,7 +230,7 @@ export default {
       toggleBottomNavStatusPanel: function() {
         this.bottomNav = !this.bottomNav;
       },
-      getDoneCount:function(doneCount,total) {
+      getDoneCount: function(doneCount, total) {
         this.doneCount = doneCount;
         this.undoneCount = total - doneCount;
       }
@@ -241,9 +241,9 @@ export default {
     mounted: function() {
       var _this = this;
       LoadServerTodos().then(function(todos) {
-        _this.todos = todos;
-      })
-      // addRole()
+          _this.todos = todos;
+        })
+        // addRole()
     }
 }
 </script>

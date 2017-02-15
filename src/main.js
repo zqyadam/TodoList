@@ -18,9 +18,12 @@ const Register = resolve=>{
     resolve(require('./pages/login/register'))
   })
 }
-// 第二种写法
-const TodoTab = resolve => require(['./pages/todo-tab'], resolve);
-
+// const TodoTab = resolve=>{
+//   require.ensure(['./pages/todo-tab'],()=>{
+//     resolve(require('./pages/todo-tab'))
+//   })
+// }
+import TodoTab from './pages/todo-tab'
 // load api
 import { getlocalStorageItemName, isLogedin } from './api/api'
 
