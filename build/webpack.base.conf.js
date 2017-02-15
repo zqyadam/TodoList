@@ -27,7 +27,7 @@ module.exports = {
       'src': path.resolve(__dirname, '../src'),
       'assets': path.resolve(__dirname, '../src/assets'),
       'components': path.resolve(__dirname, '../src/components'),
-      // 'muse-components': 'muse-ui/src'
+      'muse-components': 'muse-ui/src'
     }
   },
   resolveLoader: {
@@ -64,6 +64,14 @@ module.exports = {
     }, { // muse-ui loader
       test: /muse-ui.src.*?js$/,
       loader: 'babel'
+    }],
+    rules: [{
+      test: /\.less$/,
+      use: [
+        'style-loader',
+        { loader: 'css-loader', options: { importLoaders: 1 } },
+        'less-loader'
+      ]
     }]
   },
   vue: {

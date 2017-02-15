@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "keycode": "^2.1.8",
     "leancloud-storage": "^2.1.0",
     "marked": "^0.3.6",
     "muse-ui": "^2.0.0-rc.5",
