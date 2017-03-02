@@ -8,9 +8,9 @@
 
 - 登录及注册功能
 - 重要紧急程度分类（参考"高效Todo"App）
-- 添加及修改Todo功能
+- 添加及修改Todo功能(双击添加Todo,长按修改Todo)
 - 支持Markdown
-- 支持LeanCloud ACL权限
+
 
 # Demo
 
