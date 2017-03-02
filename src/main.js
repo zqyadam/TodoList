@@ -29,6 +29,7 @@ import  contentBlock  from 'muse-components/contentBlock'
 import  radio  from 'muse-components/radio'
 import  subHeader  from 'muse-components/subHeader'
 import  icon  from 'muse-components/icon'
+import  {menu, menuItem} from 'muse-components/menu'
 
 Vue.component(row.name, row);
 Vue.component(col.name, col);
@@ -55,6 +56,8 @@ Vue.component(contentBlock.name, contentBlock);
 Vue.component(radio.name, radio);
 Vue.component(subHeader.name, subHeader);
 Vue.component(icon.name, icon);
+Vue.component(menu.name, menu);
+Vue.component(menuItem.name, menuItem);
 
 
 import App from './App'
@@ -77,7 +80,6 @@ import { getlocalStorageItemName, isLogedin } from './api/api'
 
 // install plugins
 Vue.use(VueRouter);
-// Vue.use(MuseUI);
 VueTouch.registerCustomEvent('dbltap', {
   type: 'tap',
   taps: 2

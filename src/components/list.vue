@@ -1,13 +1,14 @@
 <template>
   <div>
     <mu-list v-if="todoData.length">
-      <mu-sub-header>{{ !showDeleteBtn?("未完成("+undoneCount+")"):("已完成("+doneCount+")") }}</mu-sub-header>
+      <mu-sub-header><span :class="noTodoTipClass">{{ types[type]+'[' + (!showDeleteBtn?("未完成("+undoneCount+")"):("已完成("+doneCount+")")) + ']'}}</span></mu-sub-header>
+      <!--  -->
       <v-touch v-on:press="editTodo(todo)" v-for="(todo,index) in todoData" >
         <mu-list-item :key="index">
         <span slot="title" v-html="toMarked(todo.attributes.content)"></span>
           <mu-icon :value="iconType" slot="left" @click="toggleStatus(todo)" />
-          <mu-icon-button v-show="showDeleteBtn" icon="delete" slot="right" @click="deleteTodo(todo)" touch/>
-          <mu-icon-button icon="mode_edit" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
+          <mu-icon-button v-show="showDeleteBtn" icon=":iconfont icon-delete" slot="right" @click="deleteTodo(todo)" touch/>
+          <mu-icon-button icon=":iconfont icon-icon26" @click="editTodo(todo)" touch slot="right" :style="{'margin-right':showDeleteBtn?'60px':'0px'}" />
           <span style="color:#ccc;" slot="describe">更新时间：{{     getUpdatedTime(todo) }}</span>
         </mu-list-item>
       </v-touch>
@@ -25,7 +26,7 @@
         </mu-flexbox-item>
         <!-- 选择类型 -->
         <mu-flexbox-item>
-          <mu-select-field label="选择类型" v-model="todoTempCopy.type" fullWidth :labelClass="labelClass">
+          <mu-select-field label="选择类型" v-model="todoTempCopy.type" fullWidth :dropDownlabelClass="labelClass">
             <mu-menu-item value="ImpEmg" title="重要-紧急" titleClass="ImpEmgTitle" />
             <mu-menu-item value="ImpNotEmg" title="重要-不紧急" titleClass="ImpNotEmgTitle" />
             <mu-menu-item value="NotImpEmg" title="不重要-紧急" titleClass="NotImpEmgTitle" />
@@ -37,7 +38,7 @@
           <mu-switch label="已完成？" labelLeft v-model="todoTempCopy.status" />
         </mu-flexbox-item>
       </mu-flexbox>
-      <mu-flat-button slot="actions" @click="saveTodoChange" icon="save" label="保存" />
+      <mu-flat-button slot="actions" @click="saveTodoChange" icon=":iconfont icon-save" label="保存" />
       <mu-flat-button slot="actions" @click="closeEditTodoDialog" label="取消" secondary/>
     </mu-dialog>
     <!-- edit Todo Item dialog end -->
@@ -97,7 +98,7 @@ export default {
       return this.showDeleteBtn ? 'fade-right' : 'fade-left';
     },
     iconType: function() {
-      return this.showDeleteBtn ? 'redo' : 'restore'
+      return this.showDeleteBtn ? ':iconfont icon-question' : ':iconfont icon-wancheng'
     },
     labelClass: function() {
       return this.todoTempCopy.type + 'Title';

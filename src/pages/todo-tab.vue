@@ -4,36 +4,41 @@
       <!-- app bar  -->
       <mu-flexbox-item>
         <mu-appbar title="TodoList">
-          <mu-icon-button icon='menu' slot="left" @click="showDrawer" />
-          <mu-icon-button icon="add" mini slot="right" tooltip="添加计划" @click="AddTodoItemDialogShow">
+          <mu-icon-button icon=':iconfont icon-menu-copy' slot="left" @click="showDrawer" />
+          <mu-icon-button icon=":iconfont icon-add1" mini slot="right" tooltip="添加计划" @click="AddTodoItemDialogShow">
           </mu-icon-button>
         </mu-appbar>
       </mu-flexbox-item>
       <!-- app bar end -->
       <!-- tabs -->
       <mu-flexbox-item>
-        <mu-tabs class="tabBar" :value="type" @change="handleTabChange" lineClass="tabHighlight">
-          <mu-tab value="ImpEmg" :title="types['ImpEmg']" titleClass="ImpEmgTitle" />
-          <mu-tab value="ImpNotEmg" :title="types['ImpNotEmg']" titleClass="ImpNotEmgTitle" />
-          <mu-tab value="NotImpEmg" :title="types['NotImpEmg']" titleClass="NotImpEmgTitle" />
-          <mu-tab value="NotImpNotEmg" :title="types['NotImpNotEmg']" titleClass="NotImpNotEmgTitle" />
+        <mu-tabs class="tabBar" :value="bottomNav" @change="toggleBottomNavStatusPanel" lineClass="tabHighlight" >
+          <mu-tab :value="false" :title="'未完成('+undoneCount+')'" :titleClass="type+'Title'" />
+          <mu-tab :value="true" :title="'已完成('+doneCount+')'" :titleClass="type+'Title'"/>
         </mu-tabs>
       </mu-flexbox-item>
       <!-- tabs end -->
       <!-- list  -->
       <mu-flexbox :gutter="0" justify="center" class="fit" align="stretch" orient="vertical" wrap>
-        <v-touch v-on:swipeleft="nextTab" v-on:swiperight="previousTab" class="fit scroll" :swipe-options="{threshold:30}" v-on:dbltap="AddTodoItemDialogShow">
+        <v-touch class="fit scroll"  v-on:dbltap="AddTodoItemDialogShow">
+        <!-- v-on:swipeleft="nextTab" v-on:swiperight="previousTab" :swipe-options="{threshold:30}" -->
           <z-list v-if="type === 'ImpEmg'" :todos="ImpEmgTodos" type="ImpEmg" noTodoTipClass="ImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" @getDoneCount="getDoneCount" />
           <z-list v-if="type === 'ImpNotEmg'" :todos="ImpNotEmgTodos" type="ImpNotEmg" noTodoTipClass="ImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
           <z-list v-if="type === 'NotImpEmg'" :todos="NotImpEmgTodos" type="NotImpEmg" noTodoTipClass="NotImpEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
           <z-list v-if="type === 'NotImpNotEmg'" :todos="NotImpNotEmgTodos" type="NotImpNotEmg" noTodoTipClass="NotImpNotEmgTitle" :showDeleteBtn="bottomNav" :types="types" />
         </v-touch>
         <!-- bottom nav -->
-        <mu-paper class="fitWidth">
+        <mu-paper class="fitWidth" >
           <v-touch @swipeleft="nextTab" @swiperight="previousTab">
-            <mu-bottom-nav :value="bottomNav" @change="toggleBottomNavStatus">
-              <mu-bottom-nav-item :value="false" :title="'未完成('+undoneCount+')'" icon="restore" />
-              <mu-bottom-nav-item :value="true" :title="'已完成('+doneCount+')'" icon="favorite" />
+            <mu-bottom-nav :value="type" @change="handleTabChange">
+              <mu-bottom-nav-item value="ImpEmg"  iconClass="ImpEmgTitle" icon=":iconfont icon-sixing"/> 
+              <!-- :title="types['ImpEmg']" -->
+              <mu-bottom-nav-item value="ImpNotEmg" iconClass="ImpNotEmgTitle" icon=":iconfont icon-sanxing"/>
+              <!-- :title="types['ImpNotEmg']"  -->
+              <mu-bottom-nav-item value="NotImpEmg" iconClass="NotImpEmgTitle" icon=":iconfont icon-erxing"/>
+              <!-- :title="types['NotImpEmg']"  -->
+              <mu-bottom-nav-item value="NotImpNotEmg" iconClass="NotImpNotEmgTitle" icon=":iconfont icon-yixing"/>
+              <!-- :title="types['NotImpNotEmg']"  -->
             </mu-bottom-nav>
           </v-touch>
         </mu-paper>
@@ -307,5 +312,9 @@ export default {
 
 .NotImpNotEmgTitle {
   color: #8bc34a;
+}
+
+.b{
+  border: 1px solid red;
 }
 </style>

@@ -6,10 +6,10 @@
     <mu-row gutter>
       <mu-col width="100" tablet="70" desktop="33" class="center">
         <img src="../../assets/logo.png" alt="">
-        <mu-text-field label="用户名" hintText="输入邮箱账号" type="email" icon="email" fullWidth v-model="email" :errorText="errorEmailMsg" />
-        <mu-text-field label="用户昵称" hintText="输入昵称" type="text" icon="perm_identity" fullWidth v-model="username" />
-        <mu-text-field label="密码" hintText="输入密码" type="password" icon="lock" fullWidth v-model="password" :errorText="errorPasswordMsg" />
-        <mu-text-field label="重复密码" hintText="重复输入密码" type="password" icon="lock_outline" fullWidth v-model="repeatPassword" :errorText="errorRepeatPasswordMsg" />
+        <mu-text-field label="用户名" hintText="输入邮箱账号" type="email" icon=":iconfont icon-email" fullWidth v-model="email" :errorText="errorEmailMsg" />
+        <mu-text-field label="用户昵称" hintText="输入昵称" type="text" icon=":iconfont icon-permidentity" fullWidth v-model="username" />
+        <mu-text-field label="密码" hintText="输入密码" type="password" icon=":iconfont icon-lock2" fullWidth v-model="password" :errorText="errorPasswordMsg" />
+        <mu-text-field label="重复密码" hintText="重复输入密码" type="password" icon=":iconfont icon-lock_outline" fullWidth v-model="repeatPassword" :errorText="errorRepeatPasswordMsg" />
         <mu-raised-button :label="btnText" labelPosition="after" primary fullWidth @click.native="registe" />
       </mu-col>
     </mu-row>
