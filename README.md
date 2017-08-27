@@ -4,6 +4,8 @@
 
 该项目用于学习Vue，UI使用muse-ui，后台数据存储在LeanCloud，目前处于测试学习开发阶段
 
+支持PWA版：https://github.com/zqyadam/pwa-todolist
+
 基本功能：
 
 - 登录及注册功能
